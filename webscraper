@@ -6,16 +6,40 @@ url = "http://www.espnfc.us/"
 r = requests.get(url)
 data = r.text
 
-soup = BeautifulSoup(data, "html.parser")
-scoreCompacts = soup.find_all("div", {"class": "score compact"})
-for matches in scoreCompacts:
-	matchDetails = matches.contents[1]
-	for teamName in matchDetails.find_all("div", {"class": "team-name"}):
-		for teams in teamName.contents:
-			print(teams.string)
-# 		allGames = []
-# 		matches = [teamName, teamName
-# 		allGames.append(matches)
-# print allGames	
-	
-	
+
+def featuredMatches():
+	teamNameArray = []
+	featuredMatches = []
+	featuredMatchesScores = []
+	scoreArray = []
+
+	soup = BeautifulSoup(data, "html.parser")
+	scoreCompacts = soup.find_all("div", {"class": "score compact"})
+	for matches in scoreCompacts:
+		matchDetails = matches.contents[1]
+		for scoreTeams in matchDetails.find_all("div", {"class": "team-score"}):
+			for scores in scoreTeams.contents:
+				scoreArray.append(scores.string.strip())
+				scoreArray = [x for x in scoreArray if x != '']
+		for teamName in matchDetails.find_all("div", {"class": "team-name"}):
+			for teams in teamName.contents:
+				teamNameArray.append(teams.string.strip()) 
+				teamNameArray = [x for x in teamNameArray if x != '']
+
+	for i in range(0, len(teamNameArray) - 1, +2):
+		gameOpponents = []
+		gameOpponents.append(teamNameArray[i])
+		gameOpponents.append(teamNameArray[i + 1])
+		featuredMatches.append(gameOpponents)
+	for j in range(0, len(scoreArray) - 1, +2):
+		teamScores = []
+		teamScores.append(scoreArray[j])
+		teamScores.append(scoreArray[j+1])
+		featuredMatchesScores.append(teamScores)
+	return [featuredMatches, featuredMatchesScores]
+
+
+
+print(featuredMatches())
+
+
