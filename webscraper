@@ -1,0 +1,21 @@
+import requests
+from bs4 import BeautifulSoup
+
+url = "http://www.espnfc.us/"
+
+r = requests.get(url)
+data = r.text
+
+soup = BeautifulSoup(data, "html.parser")
+scoreCompacts = soup.find_all("div", {"class": "score compact"})
+for matches in scoreCompacts:
+	matchDetails = matches.contents[1]
+	for teamName in matchDetails.find_all("div", {"class": "team-name"}):
+		for teams in teamName.contents:
+			print(teams.string)
+# 		allGames = []
+# 		matches = [teamName, teamName
+# 		allGames.append(matches)
+# print allGames	
+	
+	
