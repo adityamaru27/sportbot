@@ -4,27 +4,27 @@ from bs4 import BeautifulSoup
 url = "http://www.espnfc.us/"
 
 r = requests.get(url)
-data = r.text
 
 
-def featuredMatches():
+def leagueMatches(data):
 	teamNameArray = []
 	featuredMatches = []
 	featuredMatchesScores = []
 	scoreArray = []
 
 	soup = BeautifulSoup(data, "html.parser")
-	scoreCompacts = soup.find_all("div", {"class": "score compact"})
-	for matches in scoreCompacts:
-		matchDetails = matches.contents[1]
-		for scoreTeams in matchDetails.find_all("div", {"class": "team-score"}):
+	#scoreCompacts = soup.find_all("div", {"class": "score compact"})
+	leagueSelection = soup.find("div", {'class': "scorebar-league selected"})
+	for matches in leagueSelection.contents:
+		#matchDetails = matches.contents[1]
+		for scoreTeams in matches.find_all("div", {"class": "team-score"}):
 			for scores in scoreTeams.contents:
 				if scores.string != None:
 					scoreArray.append(scores.string.strip())
 				else:
 					scoreArray.append("TBP")	
 				scoreArray = [x for x in scoreArray if x != '']
-		for teamName in matchDetails.find_all("div", {"class": "team-name"}):
+		for teamName in matches.find_all("div", {"class": "team-name"}):
 			for teams in teamName.contents:
 				teamNameArray.append(teams.string.strip()) 
 				teamNameArray = [x for x in teamNameArray if x != '']
@@ -42,7 +42,5 @@ def featuredMatches():
 	return [featuredMatches, featuredMatchesScores]
 
 
-
-print(featuredMatches())
 
 
