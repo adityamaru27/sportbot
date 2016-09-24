@@ -19,7 +19,10 @@ def featuredMatches():
 		matchDetails = matches.contents[1]
 		for scoreTeams in matchDetails.find_all("div", {"class": "team-score"}):
 			for scores in scoreTeams.contents:
-				scoreArray.append(scores.string.strip())
+				if scores.string != None:
+					scoreArray.append(scores.string.strip())
+				else:
+					scoreArray.append("TBP")	
 				scoreArray = [x for x in scoreArray if x != '']
 		for teamName in matchDetails.find_all("div", {"class": "team-name"}):
 			for teams in teamName.contents:
